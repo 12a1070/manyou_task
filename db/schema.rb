@@ -16,8 +16,8 @@ ActiveRecord::Schema.define(version: 2021_09_15_053042) do
   enable_extension "plpgsql"
 
   create_table "tasks", force: :cascade do |t|
-    t.string "name"
-    t.text "content"
+    t.string "name", null: false
+    t.text "content", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
