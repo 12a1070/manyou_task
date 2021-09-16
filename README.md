@@ -1,26 +1,33 @@
-## tasksテーブル
+## task
 
 |カラム名||データ型|
 | ------------- | ------------- |
-| name  | string  |
-| content  | string  |
-| limit  | date  |
-| status  | string  |
-|  priority | integer  |
-| status  | string  |
+| name  |   |
+| user_id  |   |
+| content  |   |
+| limit  |   |
+|  status |   |
+| priority  |   |
 
 
-## usersテーブル
+
+## user
 
 |カラム名||データ型|
 | ------------- | ------------- |
 | name  | string  |
 | email | string  |
 | password_digest | string |
-| admin | boolean |
 
 
-## labelsテーブル
+
+## label
+
+|カラム名||データ型|
+| ------------- | ------------- |
+| name  | string |
+
+## labeling
 
 |カラム名||データ型|
 | ------------- | ------------- |
