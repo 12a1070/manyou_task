@@ -2,14 +2,12 @@
 
 |カラム名||データ型|
 | ------------- | ------------- |
-| name  |   |
-| user_id  |   |
-| content  |   |
-| limit  |   |
-|  status |   |
-| priority  |   |
-
-
+| name  | string |
+| user_id  | references  |
+| content  | string |
+| limit  | date |
+|  status | string |
+| priority  | integer  |
 
 ## user
 
@@ -18,7 +16,6 @@
 | name  | string  |
 | email | string  |
 | password_digest | string |
-
 
 
 ## label
