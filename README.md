@@ -1,7 +1,7 @@
 ## task
 
 |カラム名||データ型|
---- | ------ | ---
+| ------------- | ------------- |
 | name  | string |
 | user_id  | references  |
 | content  | string |
