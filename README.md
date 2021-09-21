@@ -30,3 +30,55 @@
 | ---------|-----          |
 | task_id  | references    |
 | label_id |references     |
+
+
+## Herokuへのデプロイ方法
+
+1. Heroku CLIのインストールする
+```
+brew tap heroku/brew && brew install heroku
+```
+
+2. Herokuにログイン
+```
+heroku login
+```
+
+3. ~/workspace/○○_appに位置していることを確認する
+
+4. Herokuに新しいアプリケーションを作成する
+(heroku-20では、Ruby2.6.5がサポートの対象外なのでheroku-18で)
+```
+$ heroku create --remote heroku-18 --stack heroku-18
+```
+
+5. アセットプリコンパイルのコード
+```
+$ rails assets:precompile RAILS_ENV=production
+```
+
+6. コミットする
+```
+$ git add -A
+あるいは
+$ git add .
+$ git commit -m "＊＊＊"
+```
+
+7. Heroku buildpackを追加
+```
+$ heroku buildpacks:set heroku/ruby
+$ heroku buildpacks:add --index 1 heroku/nodejs
+```
+
+8. Herokuにデプロイ
+```
+$ git push heroku-18 master
+（ブランチをheroku masterにデプロイする場合）
+$ git push heroku-18 ブランチ名:master
+```
+
+9. データベースの移行
+```
+$ heroku run rails db:migrate
+```
