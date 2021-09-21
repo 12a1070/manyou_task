@@ -6,7 +6,7 @@
 | user_id           | references |
 | content           | string     |
 | limit             | date       |
-|  status           | string     |
+|  status           | integer     |
 | priority          | integer    |
 
 ## user
