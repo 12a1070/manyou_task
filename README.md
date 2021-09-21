@@ -47,7 +47,7 @@ heroku login
 3. ~/workspace/○○_appに位置していることを確認する
 
 4. Herokuに新しいアプリケーションを作成する
-(heroku-20では、Ruby2.6.5がサポートの対象外なのでheroku-18で)
+(heroku-20では、Ruby2.6.5がサポートの対象外なのでheroku-18で行う)
 ```
 $ heroku create --remote heroku-18 --stack heroku-18
 ```
