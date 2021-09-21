@@ -62,7 +62,7 @@ $ rails assets:precompile RAILS_ENV=production
 $ git add -A
 あるいは
 $ git add .
-$ git commit -m "＊＊＊"
+$ git commit -m "コミット内容"
 ```
 
 7. Heroku buildpackを追加
