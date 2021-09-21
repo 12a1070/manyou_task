@@ -65,20 +65,20 @@ $ git add .
 $ git commit -m "コミット内容"
 ```
 
-7. Heroku buildpackを追加
+7. Heroku buildpackを追加する
 ```
 $ heroku buildpacks:set heroku/ruby
 $ heroku buildpacks:add --index 1 heroku/nodejs
 ```
 
-8. Herokuにデプロイ
+8. Herokuにデプロイする
 ```
 $ git push heroku-18 master
 （ブランチをheroku masterにデプロイする場合）
 $ git push heroku-18 ブランチ名:master
 ```
 
-9. データベースの移行
+9. データベースの移行をする
 ```
 $ heroku run rails db:migrate
 ```
