@@ -1,7 +1,7 @@
 ## task
 
 |カラム名            |データ型      |
-| ------------------|-----       |
+| ----|-----       |
 | name              | string     |
 | user_id           | references |
 | content           | string     |
@@ -31,6 +31,8 @@
 | task_id  | references    |
 | label_id |references     |
 
+<br>
+<br>
 
 ## Herokuへのデプロイ方法
 
