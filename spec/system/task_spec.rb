@@ -1,7 +1,7 @@
 
 require 'rails_helper'
 RSpec.describe 'タスク管理機能', type: :system do
-  let!(:task) { FactoryBot.create(:task, title: 'task') }
+  let!(:task) { FactoryBot.create(:task, name: 'task') }
   before do
     @task1 = FactoryBot.create(:task)
     @task2 = FactoryBot.create(:second_task)
@@ -17,8 +17,10 @@ RSpec.describe 'タスク管理機能', type: :system do
         fill_in 'task[name]',with: 'あ'
         # content欄に空欄以外を通す
         fill_in 'task[content]',with: 'あ'
+        # 終了期限を登録
+        fill_in 'task[limit]' ,with: '002020-10-11'
         # Create Taskを押した時に
-        click_button 'Create Task'
+        click_button '登録する'
         # コンテントの文字が入っている時だけしたい
         expect(page).to have_content 'あ'
       end
@@ -30,8 +32,8 @@ RSpec.describe 'タスク管理機能', type: :system do
       it '作成済みのタスク一覧が表示される' do
       # 一覧画面では、作成済みのタスクが表示される
         visit tasks_path
-        expect(page).to have_content 'タイトル１'
-        expect(page).to have_content 'タイトル２'
+        expect(page).to have_content 'name'
+        expect(page).to have_content 'name２'
       end
     end
     context 'タスクが作成日時の降順の場合' do
@@ -48,10 +50,10 @@ RSpec.describe 'タスク管理機能', type: :system do
       # visit task_path
       # click_on '編集する'
       # click_on '登録'
-      # expect(page).to have_content 'task_title'
-      task =FactoryBot.create(:task, name: 'task', content: 'task')
-      visit task_path(@task1.id)
-      expect(page).to have_content 'タイトル１'
+      # expect(page).to have_content 'task'
+      task = FactoryBot.create(:task, name: 'task', content: 'task')
+      visit task_path(task.id)
+      expect(page).to have_content 'task'
       # 任意のタスク詳細画面に遷移したとき、該当タスクの内容が表示される
       end
     end

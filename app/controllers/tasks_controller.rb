@@ -3,8 +3,12 @@ class TasksController < ApplicationController
 
   # GET /tasks or /tasks.json
   def index
-    @tasks = Task.all.order(limit: "DESC")
-    @tasks = Task.all.order(created_at: "DESC")
+# 並び替えでソートするボタンを押された場合は降順
+    if params[:sort_expired]
+      @tasks = Task.all.order(limit: "DESC")
+    else
+      @tasks = Task.all.order(created_at: "DESC")
+    end
   end
 
   # GET /tasks/1 or /tasks/1.json
@@ -65,6 +69,6 @@ class TasksController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def task_params
-      params.require(:task).permit(:name, :content, :limit)
+      params.require(:task).permit(:name, :content, :limit, :created_at)
     end
 end
