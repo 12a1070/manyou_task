@@ -29,7 +29,7 @@
 |カラム名   |データ型         |
 | ---------|-----          |
 | task_id  | references    |
-| label_id |references     |
+| label_id | references     |
 
 <br>
 <br>
