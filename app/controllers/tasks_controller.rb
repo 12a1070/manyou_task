@@ -9,8 +9,7 @@ class TasksController < ApplicationController
     elsif params[:sort_priority]
       @tasks = Task.all.order(created_at: "DESC")
     elsif
-      @tasks = Task.all
-      @tasks = @tasks.page(params[:page]).per(5)
+      @tasks = Task.all.page(params[:page]).per(5)
     end
   end
 
