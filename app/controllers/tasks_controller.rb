@@ -6,8 +6,11 @@ class TasksController < ApplicationController
 # 並び替えでソートするボタンを押された場合は降順
     if params[:sort_expired]
       @tasks = Task.all.order(limit: "DESC")
-    else
+    elsif params[:sort_priority]
       @tasks = Task.all.order(created_at: "DESC")
+    elsif
+      @tasks = Task.all
+      @tasks = @tasks.page(params[:page]).per(5)
     end
   end
 
@@ -69,6 +72,6 @@ class TasksController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def task_params
-      params.require(:task).permit(:name, :content, :limit, :created_at)
+      params.require(:task).permit(:name, :content, :limit, :created_at, :status)
     end
 end

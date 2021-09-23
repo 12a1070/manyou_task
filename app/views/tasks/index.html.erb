@@ -17,6 +17,8 @@
       <tr>
         <td><%= task.name %></td>
         <td><%= task.content %></td>
+        <td><%= l task.created_at %></td>
+
         <td><%= task.limit%></td>
         <td><%= link_to 'Show', task %></td>
         <td><%= link_to 'Edit', edit_task_path(task) %></td>
