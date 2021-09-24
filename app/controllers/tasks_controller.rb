@@ -3,14 +3,20 @@ class TasksController < ApplicationController
 
   # GET /tasks or /tasks.json
   def index
+    @tasks = Task.all.page(params[:page]).per(5)
 # 並び替えでソートするボタンを押された場合は降順
     if params[:sort_expired]
-      @tasks = Task.all.order(limit: "DESC")
+      @tasks = @tasks.order(limit: "DESC")
     elsif params[:sort_priority]
-      @tasks = Task.all.order(created_at: "DESC")
-    elsif
-      @tasks = Task.all.page(params[:page]).per(5)
+      @tasks = @tasks.order(created_at: "DESC")
+    else
+      @tasks = @tasks.order(created_at: "DESC")
     end
+
+    if params[:search]
+      @tasks = @tasks.where('name LIKE ?', "%#{params[:search]}%")
+    end
+    # @tasks = @tasks.page(params[:page]).per(5)
   end
 
   # GET /tasks/1 or /tasks/1.json

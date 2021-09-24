@@ -1,6 +1,11 @@
+
 <p id="notice"><%= notice %></p>
 
 <h1>Tasks</h1>
+  <%= form_with model: @task, url: tasks_path, method: :get, local: true do |form| %>
+    <%= form.text_field :search %>
+    <%= form.submit 'Search' %>
+  <% end %>
 
 <table>
   <thead>
@@ -8,6 +13,8 @@
       <th>Name</th>
       <th>Content</th>
       <th>Limit</th>
+      <th>Status</th>
+      <th>created_at</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -17,9 +24,11 @@
       <tr>
         <td><%= task.name %></td>
         <td><%= task.content %></td>
-        <td><%= l task.created_at %></td>
-
         <td><%= task.limit%></td>
+        <td><%= task.status%></td>
+        <td><%= task.created_at %></td>
+
+
         <td><%= link_to 'Show', task %></td>
         <td><%= link_to 'Edit', edit_task_path(task) %></td>
         <td><%= link_to 'Destroy', task, method: :delete, data: { confirm: 'Are you sure?' } %></td>
@@ -28,6 +37,11 @@
   </tbody>
 </table>
 
+<div class="index_page">
+  <%= paginate @tasks %>
+</div>
+
 <br>
 <p><%= link_to "終了期限でソートする", tasks_path(sort_expired: "true") %></p>
 <%= link_to 'New Task', new_task_path %>
+</body>
