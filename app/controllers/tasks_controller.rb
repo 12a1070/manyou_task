@@ -13,11 +13,39 @@ class TasksController < ApplicationController
       @tasks = @tasks.order(created_at: "DESC")
     end
 
-    if params[:search]
-      @tasks = @tasks.where('name LIKE ?', "%#{params[:search]}%")
+
+      # パラメータにタイトルとステータスの両方があった場合
+    if params[:search_name].present? && params[:search_status].present?
+        @tasks =Task.search_name(params[:search_name]).search_status(params[:search_status]).page(params[:page]).per(5)
+      #  パラメータにタイトルのみがあった場合
+    elsif params[:status_name].present?
+      @tasks =Task.search_name(params[:search_name]).page(params[:page]).per(5)
+      # パラメータにステータスのみがあった場合
+    elsif
+      @tasks = Task.search_status(params[:search_status]).page(params[:page]).per(5)
     end
-    # @tasks = @tasks.page(params[:page]).per(5)
   end
+
+
+#     if params[:search]
+#       @tasks = @tasks.where('name LIKE ?', "%#{params[:search]}%")
+#     end
+
+#  ステータス検索の実装
+#     if params[:status]
+#       @tasks = @tasks.
+#     end
+
+#   もし渡されたパラメータがタイトルとステータス両方だったとき
+#     if params[:name].present? && params[:status].present?
+#       @tasks =Task.search_name(params[:name]).search_status(params[:status]).page(params[:page]).per(5)
+#  elsif もし渡されたパラメータがタイトルのみだったとき
+#     elsif params[:status].present?
+#       @tasks =Task.search_name(params[:name]).page(params[:page]).per(5)
+#  elsif もし渡されたパラメータがステータスのみだったとき
+#     elsif params[:status].present?
+#       @tasks = Task.search_status(params[:status]).page(params[:page]).per(5)
+#     end
 
   # GET /tasks/1 or /tasks/1.json
   def show
@@ -79,4 +107,5 @@ class TasksController < ApplicationController
     def task_params
       params.require(:task).permit(:name, :content, :limit, :created_at, :status)
     end
+  end
 end
