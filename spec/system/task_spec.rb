@@ -1,31 +1,72 @@
 
 require 'rails_helper'
 RSpec.describe 'タスク管理機能', type: :system do
-  let!(:task) { FactoryBot.create(:task, name: 'task') }
-  before do
-    @task1 = FactoryBot.create(:task)
-    @task2 = FactoryBot.create(:second_task)
-    visit tasks_path
-  end
 
-  describe '新規作成機能' do
-    context 'タスクを新規作成した場合' do
-      it '作成したタスクが表示される' do
-        # タスクを新規作成したとき、作成したタスクが画面に表示される
-        visit new_task_path
-        # name欄に空欄以外を通したい
-        fill_in 'task[name]',with: 'あ'
-        # content欄に空欄以外を通す
-        fill_in 'task[content]',with: 'あ'
-        # 終了期限を登録
-        fill_in 'task[limit]' ,with: '002020-10-11'
-        # Create Taskを押した時に
-        click_button '登録する'
-        # コンテントの文字が入っている時だけしたい
-        expect(page).to have_content 'あ'
+
+  # let!(:task) { FactoryBot.create(:task, name: 'task') }
+  # before do
+  #   @task1 = FactoryBot.create(:task)
+  #   @task2 = FactoryBot.create(:second_task)
+  #   visit tasks_path
+  # end
+
+
+  describe '検索機能' do
+    before do
+      # 必要に応じて、テストデータの内容を変更して構わない
+      FactoryBot.create(:task, name: "八神")
+      FactoryBot.create(:second_task, name: "dic")
+    end
+    context 'タイトルであいまい検索をした場合' do
+      it "検索キーワードを含むタスクで絞り込まれる" do
+        visit tasks_path
+        # タスクの検索欄に検索ワードを入力する (例: task)
+        fill_in 'search',with: 'dic'
+        # 検索ボタンを押す
+        expect(page).to have_content 'dic'
+      end
+    end
+
+  context 'ステータス検索をした場合' do
+      it "ステータスに完全一致するタスクが絞り込まれる" do
+        # ここに実装する
+        visit task_path
+        # プルダウンを選択する「select」について調べてみること
+        select '着手',from: 'search_status'
+        click_on'search'
+        expect(page).to have_content'着手'
+      end
+    end
+    context 'タイトルのあいまい検索とステータス検索をした場合' do
+      it "検索キーワードをタイトルに含み、かつステータスに完全一致するタスク絞り込まれる" do
+        # ここに実装する
+        visit task_path
+        fill_in '着手',from: 'seach_status'
+        click_on 'search'
+        expect(page).to have_content 'test_title'
+        expect(page).to have_content '着手中'
       end
     end
   end
+
+  # describe '新規作成機能' do
+  #   context 'タスクを新規作成した場合' do
+  #     it '作成したタスクが表示される' do
+  #       # タスクを新規作成したとき、作成したタスクが画面に表示される
+  #       visit new_task_path
+  #       # name欄に空欄以外を通したい
+  #       fill_in 'task[name]',with: 'あ'
+  #       # content欄に空欄以外を通す
+  #       fill_in 'task[content]',with: 'あ'
+  #       # 終了期限を登録
+  #       fill_in 'task[limit]' ,with: '002020-10-11'
+  #       # Create Taskを押した時に
+  #       click_button '登録する'
+  #       # コンテントの文字が入っている時だけしたい
+  #       expect(page).to have_content 'あ'
+  #     end
+  #   end
+  # end
 
   describe '一覧表示機能' do
     context '一覧画面に遷移した場合' do
