@@ -21,8 +21,9 @@ RSpec.describe 'タスク管理機能', type: :system do
       it "検索キーワードを含むタスクで絞り込まれる" do
         visit tasks_path
         # タスクの検索欄に検索ワードを入力する (例: task)
-        fill_in 'search',with: 'dic'
+        fill_in 'search_name',with: 'dic'
         # 検索ボタンを押す
+        click_on 'Search'
         expect(page).to have_content 'dic'
       end
     end
@@ -30,7 +31,7 @@ RSpec.describe 'タスク管理機能', type: :system do
   context 'ステータス検索をした場合' do
       it "ステータスに完全一致するタスクが絞り込まれる" do
         # ここに実装する
-        visit task_path
+        visit tasks_path
         # プルダウンを選択する「select」について調べてみること
         select '着手',from: 'search_status'
         click_on'search'
@@ -40,11 +41,11 @@ RSpec.describe 'タスク管理機能', type: :system do
     context 'タイトルのあいまい検索とステータス検索をした場合' do
       it "検索キーワードをタイトルに含み、かつステータスに完全一致するタスク絞り込まれる" do
         # ここに実装する
-        visit task_path
-        fill_in '着手',from: 'seach_status'
+        visit tasks_path
+        fill_in '着手中',from: 'seach_status'
         click_on 'search'
         expect(page).to have_content 'test_title'
-        expect(page).to have_content '着手中'
+        expect(page).to have_content '着手'
       end
     end
   end
