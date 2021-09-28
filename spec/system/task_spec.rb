@@ -14,9 +14,9 @@ RSpec.describe 'タスク管理機能', type: :system do
   describe '検索機能' do
     before do
       # 必要に応じて、テストデータの内容を変更して構わない
-      FactoryBot.create(:task, name: "test_name")
+      FactoryBot.create(:task, name: "test" ,content:"task")
       FactoryBot.create(:second_task, name: "second_name")
-      FactoryBot.create(:task, name: "dic")
+      FactoryBot.create(:third_task, name: "dic")
     end
     context 'タイトルであいまい検索をした場合' do
       it "検索キーワードを含むタスクで絞り込まれる" do
@@ -40,13 +40,13 @@ RSpec.describe 'タスク管理機能', type: :system do
       end
     end
     context 'タイトルのあいまい検索とステータス検索をした場合' do
-      it "検索キーワードをタイトルに含み、かつステータスに完全一致するタスク絞り込まれる" do
+      it "検索キーワードをタイトル(Name)に含み、かつステータスに完全一致するタスク絞り込まれる" do
         # ここに実装する
         visit tasks_path
-        select '着手中',from: 'search_status'
+        select '完了',from: 'search_status'
         fill_in 'search_name',with: 'dic'
         click_on 'Search'
-        expect(page).not_to have_content 'test_name'
+        expect(page).not_to have_content 'task'
         expect(page).to have_content 'dic'
       end
     end
@@ -72,12 +72,18 @@ RSpec.describe 'タスク管理機能', type: :system do
   # end
 
   describe '一覧表示機能' do
+    before do
+      # 必要に応じて、テストデータの内容を変更して構わない
+      FactoryBot.create(:task, name: "test" ,content:"task")
+      FactoryBot.create(:second_task, name: "second_name")
+      FactoryBot.create(:third_task, name: "name2")
+    end
     context '一覧画面に遷移した場合' do
       it '作成済みのタスク一覧が表示される' do
       # 一覧画面では、作成済みのタスクが表示される
         visit tasks_path
-        expect(page).to have_content 'name'
-        expect(page).to have_content 'name２'
+        expect(page).to have_content 'task'
+        expect(page).to have_content 'name2'
       end
     end
     context 'タスクが作成日時の降順の場合' do
