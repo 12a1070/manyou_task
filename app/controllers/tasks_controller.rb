@@ -3,32 +3,33 @@ class TasksController < ApplicationController
 
   # GET /tasks or /tasks.json
   def index
-    # @tasks = Task.all.page(params[:page]).per(5)
+    @tasks = Task.all
 
 # 並び替えでソートするボタンを押された場合は降順
-      if params[:sort_expired]
-        @tasks = @tasks.order(limit: "DESC")
-      elsif params[:sort_priority]
-        @tasks = @tasks.order(created_at: "DESC")
-      else
-        # @tasks = @tasks.order(created_at: "DESC")
-          @tasks = Task.all.page(params[:page]).per(5)
-      end
+    if params[:sort_expired]
+      @tasks = @tasks.order(limit: "DESC")
+    elsif params[:sort_priority]
+      @tasks = @tasks.order(created_at: "DESC")
+    else
+      # @tasks = @tasks.order(created_at: "DESC")
+      @tasks = Task.all
+    end
 
 
         # パラメータにタイトルとステータスの両方があった場合
-      if params[:search_name].present? && params[:search_status].present?
-          @tasks =Task.search_name(params[:search_name]).search_status(params[:search_status]).page(params[:page])
-        #  パラメータにタイトルのみがあった場合
-      elsif params[:search_name].present?
-        @tasks =Task.search_name(params[:search_name]).page(params[:page])
-        # パラメータにステータスのみがあった場合
-      elsif params[:search_status].present?
-        @tasks = Task.search_status(params[:search_status]).page(params[:page])
-        # それ以外の時
-      else
-        @tasks = @tasks.order(created_at: "DESC")
-      end
+    if params[:search_name].present? && params[:search_status].present?
+      @tasks =Task.search_name(params[:search_name]).search_status(params[:search_status])
+      #  パラメータにタイトルのみがあった場合
+    elsif params[:search_name].present?
+      @tasks =Task.search_name(params[:search_name])
+      # パラメータにステータスのみがあった場合
+    elsif params[:search_status].present?
+      @tasks = Task.search_status(params[:search_status])
+      # それ以外の時
+    else
+      @tasks = @tasks.order(created_at: "DESC")
+    end
+    @tasks = @tasks.page(params[:page]).per(5)
   end
 
 
