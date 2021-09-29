@@ -7,12 +7,10 @@ class TasksController < ApplicationController
 
 # 並び替えでソートするボタンを押された場合は降順
     if params[:sort_expired]
-      @tasks = @tasks.order(limit: "DESC")
+      @tasks = @tasks.order(limit: "ASC")
     elsif params[:sort_priority]
-      @tasks = @tasks.order(created_at: "DESC")
-    else
-      # @tasks = @tasks.order(created_at: "DESC")
-      @tasks = Task.all
+# 優先順位が低いソート
+      @tasks = @tasks.order(priority: "ASC")
     end
 
 
@@ -32,26 +30,6 @@ class TasksController < ApplicationController
     @tasks = @tasks.page(params[:page]).per(5)
   end
 
-
-#     if params[:search]
-#       @tasks = @tasks.where('name LIKE ?', "%#{params[:search]}%")
-#     end
-
-#  ステータス検索の実装
-#     if params[:status]
-#       @tasks = @tasks.
-#     end
-
-#   もし渡されたパラメータがタイトルとステータス両方だったとき
-#     if params[:name].present? && params[:status].present?
-#       @tasks =Task.search_name(params[:name]).search_status(params[:status]).page(params[:page]).per(5)
-#  elsif もし渡されたパラメータがタイトルのみだったとき
-#     elsif params[:status].present?
-#       @tasks =Task.search_name(params[:name]).page(params[:page]).per(5)
-#  elsif もし渡されたパラメータがステータスのみだったとき
-#     elsif params[:status].present?
-#       @tasks = Task.search_status(params[:status]).page(params[:page]).per(5)
-#     end
 
   # GET /tasks/1 or /tasks/1.json
   def show
@@ -113,6 +91,6 @@ class TasksController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def task_params
-      params.require(:task).permit(:name, :content, :limit, :created_at, :status)
+      params.require(:task).permit(:name, :content, :limit, :created_at, :status, :priority)
     end
 end
