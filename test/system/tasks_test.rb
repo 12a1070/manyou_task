@@ -16,7 +16,10 @@ class TasksTest < ApplicationSystemTestCase
 
     fill_in "Content", with: @task.content
     fill_in "Name", with: @task.name
+    fill_in "Status", with: @task.status
+    fill_in "Limit", with: @task.limit
     click_on "Create Task"
+
 
     assert_text "Task was successfully created"
     click_on "Back"

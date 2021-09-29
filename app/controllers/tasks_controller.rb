@@ -4,10 +4,36 @@ class TasksController < ApplicationController
   # GET /tasks or /tasks.json
   def index
     @tasks = Task.all
+
+# 並び替えでソートするボタンを押された場合は降順
+    if params[:sort_expired]
+      @tasks = @tasks.order(limit: "ASC")
+    elsif params[:sort_priority]
+# 優先順位が低いソート
+      @tasks = @tasks.order(priority: "ASC")
+    end
+
+
+        # パラメータにタイトルとステータスの両方があった場合
+    if params[:search_name].present? && params[:search_status].present?
+      @tasks =Task.search_name(params[:search_name]).search_status(params[:search_status])
+      #  パラメータにタイトルのみがあった場合
+    elsif params[:search_name].present?
+      @tasks =Task.search_name(params[:search_name])
+      # パラメータにステータスのみがあった場合
+    elsif params[:search_status].present?
+      @tasks = Task.search_status(params[:search_status])
+      # それ以外の時
+    else
+      @tasks = @tasks.order(created_at: "DESC")
+    end
+    @tasks = @tasks.page(params[:page]).per(5)
   end
+
 
   # GET /tasks/1 or /tasks/1.json
   def show
+    @task = Task.find(params[:id])
   end
 
   # GET /tasks/new
@@ -17,6 +43,7 @@ class TasksController < ApplicationController
 
   # GET /tasks/1/edit
   def edit
+    @task = Task.find(params[:id])
   end
 
   # POST /tasks or /tasks.json
@@ -64,6 +91,6 @@ class TasksController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def task_params
-      params.require(:task).permit(:name, :content)
+      params.require(:task).permit(:name, :content, :limit, :created_at, :status, :priority)
     end
 end

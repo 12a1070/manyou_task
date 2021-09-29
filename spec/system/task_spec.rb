@@ -1,11 +1,55 @@
 
 require 'rails_helper'
 RSpec.describe 'タスク管理機能', type: :system do
-  let!(:task) { FactoryBot.create(:task, title: 'task') }
-  before do
-    @task1 = FactoryBot.create(:task)
-    @task2 = FactoryBot.create(:second_task)
-    visit tasks_path
+
+
+  # let!(:task) { FactoryBot.create(:task, name: 'task') }
+  # before do
+  #   @task1 = FactoryBot.create(:task)
+  #   @task2 = FactoryBot.create(:second_task)
+  #   visit tasks_path
+  # end
+
+
+  describe '検索機能' do
+    before do
+      # 必要に応じて、テストデータの内容を変更して構わない
+      FactoryBot.create(:task, name: "test" ,content:"task")
+      FactoryBot.create(:second_task, name: "second_name")
+      FactoryBot.create(:third_task, name: "dic")
+    end
+    context 'タイトルであいまい検索をした場合' do
+      it "検索キーワードを含むタスクで絞り込まれる" do
+        visit tasks_path
+        # タスクの検索欄に検索ワードを入力する (例: task)
+        fill_in 'search_name',with: 'dic'
+        # 検索ボタンを押す
+        click_on 'Search'
+        expect(page).to have_content 'dic'
+      end
+    end
+
+  context 'ステータス検索をした場合' do
+      it "ステータスに完全一致するタスクが絞り込まれる" do
+        # ここに実装する
+        visit tasks_path
+        # プルダウンを選択する「select」について調べてみること
+        select '着手中',from: 'search_status'
+        click_on'Search'
+        expect(page).to have_content'着手中'
+      end
+    end
+    context 'タイトルのあいまい検索とステータス検索をした場合' do
+      it "検索キーワードをタイトル(Name)に含み、かつステータスに完全一致するタスク絞り込まれる" do
+        # ここに実装する
+        visit tasks_path
+        select '完了',from: 'search_status'
+        fill_in 'search_name',with: 'dic'
+        click_on 'Search'
+        expect(page).not_to have_content 'task'
+        expect(page).to have_content 'dic'
+      end
+    end
   end
 
   describe '新規作成機能' do
@@ -14,26 +58,39 @@ RSpec.describe 'タスク管理機能', type: :system do
         # タスクを新規作成したとき、作成したタスクが画面に表示される
         visit new_task_path
         # name欄に空欄以外を通したい
-        fill_in 'task[name]',with: 'あ'
+        fill_in 'task[name]',with: 'test_name'
         # content欄に空欄以外を通す
-        fill_in 'task[content]',with: 'あ'
+        fill_in 'task[content]',with: 'test_content'
+        # 終了期限を登録
+        # step3追加条件
+        # 終了期限の設定において、プルダウン選択の、fill_in'',withだけではなくselect'',fromを使用する。
+        fill_in 'task[limit]' ,with: '002020-10-11'
+        select '着手中', from: "task[status]"
+        select '中', from: "task[priority]"
         # Create Taskを押した時に
-        click_button 'Create Task'
+        click_button '登録する'
         # コンテントの文字が入っている時だけしたい
-        expect(page).to have_content 'あ'
+        expect(page).to have_content 'test_name'
       end
     end
   end
 
   describe '一覧表示機能' do
+    before do
+      # 必要に応じて、テストデータの内容を変更して構わない
+      FactoryBot.create(:task, name: "test" ,content:"task")
+      FactoryBot.create(:second_task, name: "second_name")
+      FactoryBot.create(:third_task, name: "name2")
+    end
     context '一覧画面に遷移した場合' do
       it '作成済みのタスク一覧が表示される' do
       # 一覧画面では、作成済みのタスクが表示される
         visit tasks_path
-        expect(page).to have_content 'タイトル１'
-        expect(page).to have_content 'タイトル２'
+        expect(page).to have_content 'task'
+        expect(page).to have_content 'name2'
       end
     end
+    # step2追加用件
     context 'タスクが作成日時の降順の場合' do
       it '新しいタスクが一番上に表示される' do
         visit tasks_path
@@ -48,12 +105,28 @@ RSpec.describe 'タスク管理機能', type: :system do
       # visit task_path
       # click_on '編集する'
       # click_on '登録'
-      # expect(page).to have_content 'task_title'
-      task =FactoryBot.create(:task, name: 'task', content: 'task')
-      visit task_path(@task1.id)
-      expect(page).to have_content 'タイトル１'
+      # expect(page).to have_content 'task'
+      task = FactoryBot.create(:task, name: 'task', content: 'task')
+      visit task_path(task.id)
+      expect(page).to have_content 'task'
       # 任意のタスク詳細画面に遷移したとき、該当タスクの内容が表示される
       end
+    end
+  end
+
+  # step3追加用件
+  context 'タスクが終了期限の降順の場合' do
+    it '終了期限が早いタスクが上に表示される' do
+      task1 = FactoryBot.create(:task, name: 'limit1', limit:'2221-12-31 00:00:00')
+      task2 = FactoryBot.create(:task, name: 'limit2', limit:'2222-12-31 00:00:00')
+      task3 = FactoryBot.create(:task, name: 'limit3', limit:'2223-12-31 00:00:00')
+      visit tasks_path
+    # 終了期限の降順に並び替えられたタスク一覧が表示される
+      click_on '終了期限でソートする'
+      task = all('.task_now')
+      expect(task[2]).to have_content '2223-12-31'
+      expect(task[1]).to have_content '2222-12-31'
+      expect(task[0]).to have_content '2221-12-31'
     end
   end
 end

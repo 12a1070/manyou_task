@@ -6,7 +6,7 @@
 | user_id           | references |
 | content           | string     |
 | limit             | date       |
-|  status           | string     |
+|  status           | integer     |
 | priority          | integer    |
 
 ## user
@@ -29,7 +29,7 @@
 |カラム名   |データ型         |
 | ---------|-----          |
 | task_id  | references    |
-| label_id |references     |
+| label_id | references     |
 
 <br>
 <br>
