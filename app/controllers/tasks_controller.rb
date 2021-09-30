@@ -59,6 +59,8 @@ class TasksController < ApplicationController
         format.json { render json: @task.errors, status: :unprocessable_entity }
       end
     end
+    # ログインシステムのテキスト・・・ログインしているユーザーのみの機能。必要？
+    @task.user_id =current_user.id
   end
 
   # PATCH/PUT /tasks/1 or /tasks/1.json
