@@ -5,6 +5,8 @@ Rails.application.routes.draw do
     get 'users/show'
     get 'users/index'
   end
+
+  resources :users
   namespace :admin do
     resources :users
   end
