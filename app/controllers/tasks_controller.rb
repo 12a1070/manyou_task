@@ -49,7 +49,11 @@ class TasksController < ApplicationController
 
   # POST /tasks or /tasks.json
   def create
-    @task = Task.new(task_params)
+    # @task = Task.new(task_params)
+    # # ログインシステムのテキスト・・・ログインしているユーザーのみの機能
+    # @task.user_id = current_user.id
+
+    @task = current_user.tasks.build(task_params)
 
     respond_to do |format|
       if @task.save
@@ -60,9 +64,7 @@ class TasksController < ApplicationController
         format.json { render json: @task.errors, status: :unprocessable_entity }
       end
     end
-    # ログインシステムのテキスト・・・ログインしているユーザーのみの機能
-    @task.user_id =current_user.id
-    render :new if @task.invalid?
+    # render :new if @task.invalid?
   end
 
   # PATCH/PUT /tasks/1 or /tasks/1.json
