@@ -8,7 +8,6 @@ class ApplicationController < ActionController::Base
       unless current_user.id == @task.user_id
         redirect_to tasks_path, notice:"権限を持っていません"
       end
-    end
     else
       redirect_to new_user_path, notice:"ログインしてください"
     end
@@ -21,7 +20,7 @@ class ApplicationController < ActionController::Base
       end
     else
       redirect_to new_user_path, notice:"ログインしてください"
-  end
+    end
 
   def logined_not_user_new
     redirect_to tasks_path, notice:"ユーザを新規作成する場合はログアウトしてください"
@@ -30,5 +29,6 @@ class ApplicationController < ActionController::Base
   private
   def login_required
     redirect_to new_session_path unless current_user
+  end
   end
 end
