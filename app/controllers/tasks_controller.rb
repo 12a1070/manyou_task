@@ -3,7 +3,8 @@ class TasksController < ApplicationController
 
   # GET /tasks or /tasks.json
   def index
-    @tasks = Task.all
+    # @tasks = Task.all
+      @tasks = current_user.tasks
 
 # 並び替えでソートするボタンを押された場合は降順
     if params[:sort_expired]
@@ -59,8 +60,9 @@ class TasksController < ApplicationController
         format.json { render json: @task.errors, status: :unprocessable_entity }
       end
     end
-    # ログインシステムのテキスト・・・ログインしているユーザーのみの機能。必要？
+    # ログインシステムのテキスト・・・ログインしているユーザーのみの機能
     @task.user_id =current_user.id
+    render :new if @task.invalid?
   end
 
   # PATCH/PUT /tasks/1 or /tasks/1.json
