@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   # アドミン定義
+# namespace・・・URLをアドミンをつけた状態で作れる。
   namespace :admin do
+# ユーザーにクラッド機能につけることができる
     resources :users
   end
 

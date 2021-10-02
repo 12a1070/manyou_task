@@ -1,2 +1,36 @@
-<h1>Admin::Users#index</h1>
-<p>Find me in app/views/admin/users/index.html.erb</p>
+
+<p><%= link_to "新規ユーザー登録", new_admin_user_path%></p>
+
+<div class="index_page">
+  <%= paginate @users %>
+
+<%# 一般ユーザーが作ったタスクを表示させる %>
+<h2>Taskユーザー一覧</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>名前</th>
+      <th>メールアドレス</th>
+      <th>管理者権限</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @users.each do |user| %>
+      <tr class = 'user_now'>
+
+<%# ↑taskを作ったユーザーの名前を引っ張ってくる %>
+        <td><%= user.name %></td>
+        <td><%= user.email %></td>
+        <td><%= user.admin%></td>
+        <td><%= link_to 'Show', user %></td>
+        <td><%= link_to 'Edit', edit_task_path(user) %></td>
+        <td><%= link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+</div>

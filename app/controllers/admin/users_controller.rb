@@ -1,10 +1,13 @@
+# 管理者権限以外はアクセスさせないようにする
+
 class Admin::UsersController < ApplicationController
   before_action :admin_check
   before_action :set_user, only: %i[ show edit update destroy]
 
-
+# N+1問題をincludesで解決
   def index
-    @users = User.all.includes(:tasks)
+    @tasks = @user.all.includes(:tasks)
+    @users = @users.page(params[:page]).per(5)
   end
 
 
