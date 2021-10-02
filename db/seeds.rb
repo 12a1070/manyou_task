@@ -3,5 +3,6 @@
 User.create!(
   name: 'admin',
   email: 'admin@example.com',
-  password: 'password'
+  password: 'password',
+  admin: true
 )

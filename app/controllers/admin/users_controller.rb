@@ -39,7 +39,7 @@ class Admin::UsersController < ApplicationController
     if @user.update(user_params)
       redirect_to admin_users_path, notice: "ユーザーを更新しました"
     else
-      render :edit
+      render :edit,
     end
   end
 

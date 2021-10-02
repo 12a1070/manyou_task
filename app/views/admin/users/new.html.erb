@@ -1,4 +1,4 @@
-<h1>管理ユーザー</h1>
+<h1>管理ユーザー用 新規ユーザー登録</h1>
 <% form_with(model: [:admin, @user],local: true) do |form|%>
     <% if @user.errors.any? %>
       <div id="error_explanation">
@@ -18,31 +18,27 @@
     </div>
 
     <div class="field">
-      <%= form.label :コンテント %>
-      <%= form.text_field :content %>
+      <%= form.label :管理者権限 %>
+      <%= form.check_box :admin %>
     </div>
 
     <div class="field">
-      <%= form.label :期限 %>
-      <%= form.date_field :limit %>
+      <%= form.label :メールアドレス %>
+      <%= form.email_field :email %>
     </div>
 
     <div class="field">
-      <%= form.label :状態 %>
-      <%= form.select :status, Task.statuses.keys %>
-      <%#= form.select :status,[["未着手","未着手"],["着手中","着手中"],["完了","完了"]],include_blank: "今の状態は？"%>
-  <%#"未着手"で受け取った値を"未着手"に変換するという意味。それが着手中、完了にも適応されている %>
+      <%= form.label :パスワード %>
+      <%= form.password_field :password %>
     </div>
 
     <div class="field">
-      <% form.label :優先度 %>
-      <%= form.select :priority, Task.priorities.keys%>
+      <%= form.label :パスワード再入力 %>
+      <%= form.password_field :password_confirmation %>
     </div>
+
 
     <div class="actions">
-      <%= form.submit %>
+      <%= form.submit "登録" %>
     </div>
   <% end %>
-
-
-<p>Find me in app/views/admin/users/new.html.erb</p>
