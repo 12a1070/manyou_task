@@ -5,7 +5,8 @@ class TasksController < ApplicationController
   # GET /tasks or /tasks.json
   def index
     # @tasks = Task.all
-      @tasks = current_user.tasks
+# N+1をincludesで解決
+      @tasks = current_user.tasks.all.includes(:user).order
 
 # 並び替えでソートするボタンを押された場合は降順
     if params[:sort_expired]

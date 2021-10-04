@@ -4,15 +4,15 @@ class Admin::UsersController < ApplicationController
   before_action :admin_check
   before_action :set_user, only: %i[ show edit update destroy]
 
-# N+1問題をincludesで解決
+
   def index
-    @tasks = @user.all.includes(:tasks)
-    @users = @users.page(params[:page]).per(5)
+    @users = User.select(:id, :name, :email, :admin).order("created_at").page(params[:page]).per(5)
   end
 
 
   def show
-    @tasks = @user.tasks
+    @tasks = @user.tasks.all
+    @tasks = @tasks.page(params[:page]).per(5)
   end
 
 
@@ -39,7 +39,7 @@ class Admin::UsersController < ApplicationController
     if @user.update(user_params)
       redirect_to admin_users_path, notice: "ユーザーを更新しました"
     else
-      render :edit,
+      render :edit
     end
   end
 
