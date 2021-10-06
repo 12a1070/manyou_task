@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
 # ログインしているユーザのみ閲覧可能
-  before_action :user_check, only: [:show]
-  before_action :check_user_login,only: [:new]
+  # before_action :user_check, only: [:show]
+  # before_action :check_user_login,only: [:new]
   skip_before_action :login_required, only: [:new, :create]
 
   def new

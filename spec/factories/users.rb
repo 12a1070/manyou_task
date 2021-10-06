@@ -4,8 +4,8 @@ FactoryBot.define do
   factory :admin_user,class: User do
     name { "admin_name" }
     email { "admin@mail.com" }
-    password_digest { "password1" }
-    password_digest_confirmation{"password1"}
+    password { "password1" }
+    password_confirmation{"password1"}
     admin{true}
   end
 
@@ -13,7 +13,8 @@ FactoryBot.define do
   factory :normal_user,class: User do
     name {'normal_name'}
     email{'normal@mail.com'}
-    password_digest{'password2'}
-    password_digest_confirmation{'password2'}
+    password{'password2'}
+    password_confirmation{'password2'}
+    admin{false}
   end
 end

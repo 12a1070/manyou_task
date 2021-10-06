@@ -1,10 +1,10 @@
-reqire 'rails_helper'
+require 'rails_helper'
 RSpec.describe 'ユーザー管理システム', type: :system do
 
   def login_admin
     visit new_session_path
-    fill_in 'session[email]', with:'admin@'mail.com'
-    fill_in 'session[password_digest]'with:'password1'
+    fill_in 'session[email]', with:'admin@smail.com'
+    fill_in 'session[password_digest]',with:'password1'
     lick_button 'Log in'
   end
 
@@ -23,9 +23,9 @@ RSpec.describe 'ユーザー管理システム', type: :system do
         visit new_user_path
         fill_in 'user[name]', with: 'normal_name'
         fill_in 'user[email', with: 'normal@mail.com'
-        fill_in 'user[password_digest]', with: 'password2'
-        fill_in 'user[password_digest_confirmation]', with: 'password2'
-        click_btton 'Create my account'
+        fill_in 'user[password', with: 'password2'
+        fill_in 'user[password_confirmation]', with: 'password2'
+        click_button 'Create my account'
         expect(page).to have_content 'normal@mail.com'
       end
 
@@ -53,7 +53,7 @@ RSpec.describe 'ユーザー管理システム', type: :system do
     end
 
     context 'ユーザーのデータが存在していてログイン状態の時'  do
-      it 'マイページに飛ぶ' do
+      it '自分の詳細画面に飛ぶ' do
         login
         visit user_path(id: @normal_user.id)
         expect(current_path).to eq user_path(id: @normal_user.id)
@@ -103,8 +103,29 @@ RSpec.describe 'ユーザー管理システム', type: :system do
       fill_in 'user[email]',with: 'normal@mail.com'
       fill_in 'user[password_digest]',with:'password2'
       fill_in 'user[password_digest_confirmation]',with:'password2'
-
+      click_button ''
+      visit admin_users_path
+      expect(page).to have_content 'normal_name'
     end
+
+    it '管理ユーザーはユーザーの詳細画面にアクセス可能' do
+      visit admin_users_path
+      click_on '', match: :
+      expect(current_path).to eq admin_users_path(id: @normal_user.id)
+    end
+
+    it '管理ユーザーはユーザーの編集画面からユーザーを編集できる' do
+      visit edit_admin_user_path(id: @normal_user.id)
+      fill_in 'user[name]', with: ''
+      fill_in 'user[email]', with: ''
+      fill_in 'user[password]', with: ''
+      fill_in 'user[password_confirmation]', with: ''
+      click_on ''
+      expect(page).test_content ''
+    end
+
+    it '管理ユーザーはユーザーを消去できる'
+      visit admin_users_path
 
   end
 
