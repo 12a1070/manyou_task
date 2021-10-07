@@ -100,6 +100,10 @@ RSpec.describe 'タスク管理機能', type: :system do
     end
   end
 
+
+
+
+
   describe '一覧表示機能' do
     before do
       # 必要に応じて、テストデータの内容を変更して構わない
@@ -115,6 +119,20 @@ RSpec.describe 'タスク管理機能', type: :system do
         expect(page).to have_content 'name2'
       end
     end
+
+
+# タスク消去機能
+  context 'タスク削除機能' do
+    it '削除したら一覧画面からタスクが消える' do
+      visit tasks_path
+      expect(page).to have_content 'name2'
+      page.accept_confirm do
+        first('.task_now').click_link 'Destroy'
+      end
+      expect(page).not_to have_content 'name2'
+    end
+  end
+
     # step2追加用件
     context 'タスクが作成日時の降順の場合' do
       it '新しいタスクが一番上に表示される' do

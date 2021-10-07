@@ -3,17 +3,19 @@ RSpec.describe 'ユーザー管理システム', type: :system do
 
   def login_admin
     visit new_session_path
+# 管理者のアドレスとパスを入力
     fill_in 'session[email]', with:'admin@smail.com'
     fill_in 'session[password_digest]',with:'password1'
-    lick_button 'Log in'
+    lick_button 'ログイン'
   end
 
 
   def login
     visit new_session_path
+# 一般ユーザーのアドレスとパスを入力
     fill_in 'session[email]', with: 'normal@mail.com'
     fill_in 'session[password_digest]',with:'password2'
-    click_button 'Log in'
+    click_button 'ログイン'
   end
 
 
@@ -25,7 +27,7 @@ RSpec.describe 'ユーザー管理システム', type: :system do
         fill_in 'user[email', with: 'normal@mail.com'
         fill_in 'user[password', with: 'password2'
         fill_in 'user[password_confirmation]', with: 'password2'
-        click_button 'Create my account'
+        click_button '登録'
         expect(page).to have_content 'normal@mail.com'
       end
 
@@ -47,7 +49,7 @@ RSpec.describe 'ユーザー管理システム', type: :system do
         visit new_session_path
         fill_in 'session[email]', with: 'normal@mail.com'
         fill_in 'session[password_digest]', with:'password2'
-        click_button 'log in'
+        click_button 'ログイン'
         expect(current_path).to eq user_path(id: @normal_user.id)
       end
     end
@@ -79,11 +81,12 @@ RSpec.describe 'ユーザー管理システム', type: :system do
 
   describe '管理画面テスト' do
     before do
+# 管理者と一般ユーザーを事前に作成
       @normal_user = FactoryBot.create(:normal_user)
       @admin_user = FactoryBot.create(:admin_user)
     end
 
-    context '一般ユーザでログインしている場合' do
+    context '一般ユーザーでログインしている場合' do
       it '管理ページにアクセスできない' do
         login
         visit admin_users_path
@@ -91,10 +94,16 @@ RSpec.describe 'ユーザー管理システム', type: :system do
       end
     end
 
-    it '管理画面にアクセスできる' do
-      visit admin_users_path
-      expect(page).to have_content "タスクユーザー一覧"
-    end
+    context '管理者でログインしている場合' do
+      before do
+# 事前に管理ユーザーでログインする
+        login_admin
+      end
+
+      it '管理画面にアクセスできる' do
+        visit admin_users_path
+        expect(page).to have_content "タスクユーザー一覧"
+      end
 
     it '管理者はユーザーの新規登録が可能' do
       visit admin_users_path
@@ -103,31 +112,32 @@ RSpec.describe 'ユーザー管理システム', type: :system do
       fill_in 'user[email]',with: 'normal@mail.com'
       fill_in 'user[password_digest]',with:'password2'
       fill_in 'user[password_digest_confirmation]',with:'password2'
-      click_button ''
+      click_button '登録'
       visit admin_users_path
       expect(page).to have_content 'normal_name'
     end
 
     it '管理ユーザーはユーザーの詳細画面にアクセス可能' do
       visit admin_users_path
-      click_on '', match: :
+      click_on 'Show', match: :
       expect(current_path).to eq admin_users_path(id: @normal_user.id)
     end
 
     it '管理ユーザーはユーザーの編集画面からユーザーを編集できる' do
       visit edit_admin_user_path(id: @normal_user.id)
-      fill_in 'user[name]', with: ''
-      fill_in 'user[email]', with: ''
-      fill_in 'user[password]', with: ''
-      fill_in 'user[password_confirmation]', with: ''
-      click_on ''
+      fill_in 'user[name]', with: 'admin@example.co.jp'
+      fill_in 'user[email]', with: 'admin@example.co.jp'
+      fill_in 'user[password]', with: 'admin@example.co.jp'
+      fill_in 'user[password_confirmation]', with: 'admin@example.co.jp'
+      click_on '更新'
       expect(page).test_content ''
     end
 
-    it '管理ユーザーはユーザーを消去できる'
+    it '管理ユーザーはユーザーを消去できる' do
       visit admin_users_path
+      expect()
+    end
 
   end
-
 
 end

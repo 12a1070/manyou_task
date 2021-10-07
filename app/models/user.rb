@@ -1,6 +1,9 @@
 class User < ApplicationRecord
   has_many :tasks,dependent: :destroy
 
+  before_destroy :destroy_action
+  before_update :update_action
+
   before_validation { email.downcase! }
     validates :name, presence: true, length: { maximum: 30 }
     validates :email,uniqueness: true, presence: true, length: { maximum: 255 },
@@ -20,6 +23,7 @@ class User < ApplicationRecord
 
   def update_action
     @admin_users = User.where(admin: true)
+# 管理権限を持っているのは複数の可能性もある
       if(@admin_users.count == 1 && @admin_users.first == self) && self.admin == false
         errors.add :base, "管理者がいなくなってしまいます"
         throw.abort
