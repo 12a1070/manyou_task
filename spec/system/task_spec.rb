@@ -125,16 +125,17 @@ RSpec.describe 'タスク管理機能', type: :system do
   # step3追加用件
     context 'タスクが終了期限の降順の場合' do
       it '終了期限が早いタスクが上に表示される' do
+        visit tasks_path
         task1 = FactoryBot.create(:task, name: 'limit1', limit:'2221-12-31 00:00:00', user:@admin_user)
         task2 = FactoryBot.create(:task, name: 'limit2', limit:'2222-12-31 00:00:00', user:@admin_user)
         task3 = FactoryBot.create(:task, name: 'limit3', limit:'2223-12-31 00:00:00', user:@admin_user)
-        visit tasks_path
       # 終了期限の降順に並び替えられたタスク一覧が表示される
         click_on '終了期限でソートする'
         task = all('.task_now')
-        expect(task[2]).to have_content '2223-12-31'
+# binding.pryをして expect(task[0]).to have_content '2223-12-31'〜expect(task[2]).to have_content '2221-12-31'が[2][1][0]だったのが間違い。
+        expect(task[0]).to have_content '2223-12-31'
         expect(task[1]).to have_content '2222-12-31'
-        expect(task[0]).to have_content '2221-12-31'
+        expect(task[2]).to have_content '2221-12-31'
       end
     end
   end
