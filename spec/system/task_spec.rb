@@ -101,9 +101,6 @@ RSpec.describe 'タスク管理機能', type: :system do
   end
 
 
-
-
-
   describe '一覧表示機能' do
     before do
       # 必要に応じて、テストデータの内容を変更して構わない
@@ -150,6 +147,7 @@ RSpec.describe 'タスク管理機能', type: :system do
       # 終了期限の降順に並び替えられたタスク一覧が表示される
         click_on '終了期限でソートする'
         task = all('.task_now')
+        sleep 1.0
 # binding.pryをして expect(task[0]).to have_content '2223-12-31'〜expect(task[2]).to have_content '2221-12-31'が[2][1][0]だったのが間違い。
         expect(task[0]).to have_content '2223-12-31'
         expect(task[1]).to have_content '2222-12-31'

@@ -15,7 +15,7 @@ class UsersController < ApplicationController
 # ユーザー登録と同時にログイン
       session[:user_id] = @user_id
       flash[:notice] ='ログインしました'
-      redirect_to user_path(@user.id),notice: "ユーザー「#{@user.name}を登録しました。"
+      redirect_to user_path(@user.id),notice: "ユーザー「#{@user.name}」を登録しました。"
     else
       render :new
     end
