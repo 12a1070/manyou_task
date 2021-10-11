@@ -1,6 +1,7 @@
 FactoryBot.define do
 
 # 管理者作成
+# 下記のアカは実際に作った管理ユーザー
   factory :admin_user,class: User do
     name { "テスト1" }
     email { "admin1@example.com" }

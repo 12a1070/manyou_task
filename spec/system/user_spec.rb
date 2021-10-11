@@ -163,12 +163,12 @@ RSpec.describe 'ユーザー管理システムのテスト', type: :system do
       it 'ユーザーの新規登録テスト' do
         # 【テストの処理（〇〇になることを期待する）】
         visit new_user_path
-        fill_in 'user[name]', with: 'test@mail.com'
-        fill_in 'user[email]', with: 'test@mail.com'
-        fill_in 'user[password]', with: 'test@mail.com'
-        fill_in 'user[password_confirmation]', with: 'test@mail.com'
+        fill_in 'user[name]', with: 'test2@mail.com'
+        fill_in 'user[email]', with: 'test2@mail.com'
+        fill_in 'user[password]', with: 'test2@mail.com'
+        fill_in 'user[password_confirmation]', with: 'test2@mail.com'
         click_button 'Create my account'
-        expect(page).to have_content 'test@mail.com'
+        expect(page).to have_content 'test2@mail.com'
       end
       it 'ログインしてない時はログイン画面に飛ぶ' do
         visit tasks_path
@@ -264,11 +264,11 @@ RSpec.describe 'ユーザー管理システムのテスト', type: :system do
       end
 
       it '管理者はユーザーの新規登録ができる' do
-        click_on "新規ユーザー作成"
-        fill_in 'user[name]', with: 'test2@mail.com'
-        fill_in 'user[email]', with: 'test2@mail.com'
-        fill_in 'user[password]', with: 'test2@mail.com'
-        fill_in 'user[password_confirmation]', with: 'test2@mail.com'
+        click_on "新規ユーザー登録"
+        fill_in 'user[name]', with: 'test@mail.com'
+        fill_in 'user[email]', with: 'test@mail.com'
+        fill_in 'user[password]', with: 'test@mail.com'
+        fill_in 'user[password_confirmation]', with: 'test@mail.com'
         click_on '登録'
         expect(page).test_content 'test@mail.com'
       end
