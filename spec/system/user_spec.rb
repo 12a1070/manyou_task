@@ -248,7 +248,7 @@ RSpec.describe 'ユーザー管理システムのテスト', type: :system do
         fill_in 'session[password]', with:'test2@mail.com'
         click_on 'ログイン'
         visit admin_users_path
-        expect(page).to have_content'管理者以外はアクセス不可です'
+        expect(page).to have_content "管理者以外はアクセス不可です"
       end
     end
 
@@ -264,7 +264,7 @@ RSpec.describe 'ユーザー管理システムのテスト', type: :system do
       end
 
       it '管理者はユーザーの新規登録ができる' do
-        click_on '新規ユーザー作成'
+        click_on "新規ユーザー作成"
         fill_in 'user[name]', with: 'test2@mail.com'
         fill_in 'user[email]', with: 'test2@mail.com'
         fill_in 'user[password]', with: 'test2@mail.com'
@@ -274,7 +274,7 @@ RSpec.describe 'ユーザー管理システムのテスト', type: :system do
       end
 
       it '管理者はユーザーの詳細画面にアクセスできる' do
-        @user = FactoryBot.create(:adimin_user)
+        @user = FactoryBot.create(:admin_user)
         visit admin_users_path
         expect(page).to have_content 'プロフイール情報'
       end
