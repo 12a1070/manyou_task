@@ -260,10 +260,40 @@ RSpec.describe 'ユーザー管理システムのテスト', type: :system do
       end
 
       it '管理者はユーザーの新規登録ができる' do
-
+        click_on '新規ユーザー作成'
+        fill_in 'user[name]', with: 'test@mail.com'
+        fill_in 'user[email]', with: 'test@mail.com'
+        fill_in 'user[password]', with: 'test@mail.com'
+        fill_in 'user[password_confirmation]', with: 'test@mail.com'
+        click_on '登録'
+        expect(page).test_content 'test@mail.com'
       end
 
+      it '管理者はユーザーの詳細画面にアクセスできる' do
+        @user = FactoryBot.create(:user)
+        visit admin_users_path
+        expect(page).to have_content 'プロフイール情報'
+      end
+
+      it '管理者はユーザーの編集画面からユーザーを編集できる' do
+        @user = FactoryBot.create(:user)
+        visit edit_admin_user_path(id: @user.id)
+        fill_in 'user[name]', with: 'test@mail.com'
+        fill_in 'user[email]', with: 'test@mail.com'
+        fill_in 'user[password]', with: 'test@mail.com'
+        fill_in 'user[password_confirmation]', with: 'test@mail.com'
+        click_on '更新'
+        expect(page).to have_content 'test@mail.com'
+      end
+
+      it'管理者はユーザーの削除ができる' do
+        @user = FactoryBot.create(:user)
+        visit admin_users_path
+        click_on 'Destroy', match: :first
+        page.driver.browser.switch_to.alert.accept
+        expect(page).to have_content '管理者がいなくなるので削除できません'
+      end
 
     end
-
+  end
 end
