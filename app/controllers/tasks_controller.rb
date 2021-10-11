@@ -1,6 +1,9 @@
 class TasksController < ApplicationController
   before_action :set_task, only: %i[ show edit update destroy ]
   # before_action :user_check_t, only: %i[:edit, :update, :destroy]
+  before_action :check_user, only: %i[show edit update destroy]
+
+
 
   # GET /tasks or /tasks.json
   def index
@@ -101,4 +104,13 @@ class TasksController < ApplicationController
     def task_params
       params.require(:task).permit(:name, :content, :limit, :created_at, :status, :priority)
     end
+
+    def check_user
+        @task = Task.find(params[:id])
+        if current_user.id != @task.user_id
+        # ログインしているユーザーのIDと投稿されているユーザーのIDが違っている場合
+          redirect_to tasks_path, notice: '他人のページへアクセスはできません'
+        end
+    end
+
 end

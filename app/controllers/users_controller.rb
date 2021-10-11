@@ -1,7 +1,5 @@
 class UsersController < ApplicationController
 # ログインしているユーザのみ閲覧可能
-  # before_action :user_check, only: [:show]
-  # before_action :check_user_login,only: [:new]
   skip_before_action :login_required, only: [:new, :create]
 
   def new
@@ -25,6 +23,9 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find(params[:id])
+    unless @user == current_user
+      redirect_to tasks_path, notice: '他人のページへアクセスはできません'
+    end
   end
 
 
@@ -33,7 +34,5 @@ class UsersController < ApplicationController
     params.require(:user).permit(:name, :email, :admin, :password,
                                   :password_confirmation)
   end
-
-
 
 end

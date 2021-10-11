@@ -163,12 +163,12 @@ RSpec.describe 'ユーザー管理システムのテスト', type: :system do
       it 'ユーザーの新規登録テスト' do
         # 【テストの処理（〇〇になることを期待する）】
         visit new_user_path
-          fill_in 'user[name]', with: 'test'
-          fill_in 'user[email]', with: 'test@mail.com'
-          fill_in 'user[password]', with: '123456'
-          fill_in 'user[password_confirmation]', with: '123456'
-          click_button 'Create my account'
-          expect(page).to have_content 'ユーザー「testを登録しました」'
+        fill_in 'user[name]', with: 'test@mail.com'
+        fill_in 'user[email]', with: 'test@mail.com'
+        fill_in 'user[password]', with: 'test@mail.com'
+        fill_in 'user[password_confirmation]', with: 'test@mail.com'
+        click_button 'Create my account'
+        expect(page).to have_content 'test@mail.com'
       end
       it 'ログインしてない時はログイン画面に飛ぶ' do
         visit tasks_path
@@ -180,7 +180,8 @@ RSpec.describe 'ユーザー管理システムのテスト', type: :system do
 
   describe 'セッション機能のテスト' do
     before do
-      @normal_user =  FactoryBot.create(:user)
+      @user = FactoryBot.create(:normal_user)
+      # @admin_user = FactoryBot.create(:admin_user)
     end
     context 'ユーザーのデータが存在していてログインしていない時' do
       it 'ログイン可能である' do
@@ -189,33 +190,36 @@ RSpec.describe 'ユーザー管理システムのテスト', type: :system do
         fill_in 'session[email]', with: 'test2@mail.com'
         fill_in 'session[password]',with: 'test2@mail.com'
         click_button 'ログイン'
-        expect(current_path).to eq user_path(id: @normal_user.id)
+        expect(current_path).to eq user_path(id: @user.id)
       end
     end
 
-    content 'ユーザーのデータが存在していてログインしているとき' do
+    context 'ユーザーのデータが存在していてログインしているとき' do
       before do
         visit new_session_path
         fill_in 'session[email]', with: 'test2@mail.com'
         fill_in 'session[password]',with:'test2@mail.com'
         click_on 'ログイン'
-        # ログインしている前提になっている
+      #   # ログインしている前提になっている
       end
 
       it 'マイページに遷移する' do
-        visit user_path(id: @user.id)
-        expect(page).to eq user_path(id: @user.id)
+        visit user_path(@user.id)
+        expect(current_path).to eq user_path(id: @user.id)
       end
 
       it '一般ユーザーが他のユーザーの詳細画面に飛ぶとタスク一覧ページに遷移する' do |variable|
-        @admin_user = FactoryBot.create(:admin_user)
-        visit user_path(id: @admin_user.id)
-        expect(page).to have_content '他のユーザーのページにはいけません'
+        @user2 = User.create(name: "terai", email: "terai@gmail.com",password: "terai@gmail.com", password_confirmation: "terai@gmail.com")
+        visit user_path(id: @user2.id)
+# binding.irb
+        # 今のままだとid:13のユーザーがid:14のページに飛べている。アクセス制限が必要になる。
+        # 一般ユーザにとって違うユーザーである管理者のタスク一覧に行く
+        expect(page).to have_content '他人のページへアクセスはできません'
       end
 
       it 'ログアウト可能である' do
         visit user_path(id: @user.id)
-        click_on ' Logout'
+        click_on 'Logout'
         expect(page).to have_content 'ログアウトしました'
       end
     end
@@ -225,10 +229,10 @@ RSpec.describe 'ユーザー管理システムのテスト', type: :system do
   describe '管理画面のテスト' do
     context '管理者がいないとき' do
       it '管理者は管理画面にアクセスできる' do
-        FactoryBot.create(:admin_user)
+        # FactoryBot.create(:admin_user)
         visit new_session_path
         fill_in 'session[email]', with: 'admin1@example.com'
-        fill_in 'session[password]' with: 'admin1@example.com'
+        fill_in 'session[password]', with: 'admin1@example.com'
         click_on 'ログイン'
         visit admin_users_path
         expect(page).to have_content 'true'
@@ -236,12 +240,12 @@ RSpec.describe 'ユーザー管理システムのテスト', type: :system do
     end
 
 
-    content '一般ユーザーでログインしているとき' do
+    context '一般ユーザーでログインしているとき' do
       it '一般ユーザーは管理者画面に入れない' do
-        FactoryBot.create(:user)
+        FactoryBot.create(:normal_user)
         visit new_session_path
-        fill_in 'session[email]' with:'test2@mail.com'
-        fill_in 'session[password]' with'test2@mail.com'
+        fill_in 'session[email]', with:'test2@mail.com'
+        fill_in 'session[password]', with:'test2@mail.com'
         click_on 'ログイン'
         visit admin_users_path
         expect(page).to have_content'管理者以外はアクセス不可です'
@@ -249,9 +253,9 @@ RSpec.describe 'ユーザー管理システムのテスト', type: :system do
     end
 
 
-    content '管理者でログインしている場合' do
+    context '管理者でログインしている場合' do
       before do
-        FactoryBot.create(:admin_user)
+        # FactoryBot.create(:admin_user)
         visit new_session_path
         fill_in 'session[email]', with: 'admin1@example.com'
         fill_in 'session[password]', with: 'admin1@example.com'
@@ -261,22 +265,22 @@ RSpec.describe 'ユーザー管理システムのテスト', type: :system do
 
       it '管理者はユーザーの新規登録ができる' do
         click_on '新規ユーザー作成'
-        fill_in 'user[name]', with: 'test@mail.com'
-        fill_in 'user[email]', with: 'test@mail.com'
-        fill_in 'user[password]', with: 'test@mail.com'
-        fill_in 'user[password_confirmation]', with: 'test@mail.com'
+        fill_in 'user[name]', with: 'test2@mail.com'
+        fill_in 'user[email]', with: 'test2@mail.com'
+        fill_in 'user[password]', with: 'test2@mail.com'
+        fill_in 'user[password_confirmation]', with: 'test2@mail.com'
         click_on '登録'
         expect(page).test_content 'test@mail.com'
       end
 
       it '管理者はユーザーの詳細画面にアクセスできる' do
-        @user = FactoryBot.create(:user)
+        @user = FactoryBot.create(:adimin_user)
         visit admin_users_path
         expect(page).to have_content 'プロフイール情報'
       end
 
       it '管理者はユーザーの編集画面からユーザーを編集できる' do
-        @user = FactoryBot.create(:user)
+        @user = FactoryBot.create(:admin_user)
         visit edit_admin_user_path(id: @user.id)
         fill_in 'user[name]', with: 'test@mail.com'
         fill_in 'user[email]', with: 'test@mail.com'
@@ -287,7 +291,7 @@ RSpec.describe 'ユーザー管理システムのテスト', type: :system do
       end
 
       it'管理者はユーザーの削除ができる' do
-        @user = FactoryBot.create(:user)
+        @user = FactoryBot.create(:admin_user)
         visit admin_users_path
         click_on 'Destroy', match: :first
         page.driver.browser.switch_to.alert.accept
