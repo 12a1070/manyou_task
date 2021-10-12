@@ -229,10 +229,10 @@ RSpec.describe 'ユーザー管理システムのテスト', type: :system do
   describe '管理画面のテスト' do
     context '管理者がいないとき' do
       it '管理者は管理画面にアクセスできる' do
-        # FactoryBot.create(:admin_user)
+        @first_admin = FactoryBot.create(:admin_user, name: "admin_user1", email: "admin_test@test.com")
         visit new_session_path
-        fill_in 'session[email]', with: 'admin1@example.com'
-        fill_in 'session[password]', with: 'admin1@example.com'
+        fill_in 'session[email]', with: @first_admin.email
+        fill_in 'session[password]', with: @first_admin.password
         click_on 'ログイン'
         visit admin_users_path
         expect(page).to have_content 'true'
@@ -255,7 +255,7 @@ RSpec.describe 'ユーザー管理システムのテスト', type: :system do
 
     context '管理者でログインしている場合' do
       before do
-        # FactoryBot.create(:admin_user)
+        @admin_user = FactoryBot.create(:admin_user)
         visit new_session_path
         fill_in 'session[email]', with: 'admin1@example.com'
         fill_in 'session[password]', with: 'admin1@example.com'
@@ -270,18 +270,19 @@ RSpec.describe 'ユーザー管理システムのテスト', type: :system do
         fill_in 'user[password]', with: 'test@mail.com'
         fill_in 'user[password_confirmation]', with: 'test@mail.com'
         click_on '登録'
-        expect(page).test_content 'test@mail.com'
+        expect(page).to have_content 'test@mail.com'
       end
 
       it '管理者はユーザーの詳細画面にアクセスできる' do
-        @user = FactoryBot.create(:admin_user)
+        # @user = FactoryBot.create(:admin_user)
         visit admin_users_path
-        expect(page).to have_content 'プロフイール情報'
+        click_on "Show"
+        expect(page).to have_content 'プロフィール情報'
       end
 
       it '管理者はユーザーの編集画面からユーザーを編集できる' do
-        @user = FactoryBot.create(:admin_user)
-        visit edit_admin_user_path(id: @user.id)
+        # @user = FactoryBot.create(:admin_user)
+        visit edit_admin_user_path(id: @admin_user.id)
         fill_in 'user[name]', with: 'test@mail.com'
         fill_in 'user[email]', with: 'test@mail.com'
         fill_in 'user[password]', with: 'test@mail.com'
@@ -291,7 +292,7 @@ RSpec.describe 'ユーザー管理システムのテスト', type: :system do
       end
 
       it'管理者はユーザーの削除ができる' do
-        @user = FactoryBot.create(:admin_user)
+        # @user = FactoryBot.create(:admin_user)
         visit admin_users_path
         click_on 'Destroy', match: :first
         page.driver.browser.switch_to.alert.accept
