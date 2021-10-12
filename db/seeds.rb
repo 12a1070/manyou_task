@@ -1,4 +1,4 @@
-User.create!(
+@user = User.create!(
   name: 'admin1',
   email: 'admin1@example.com',
   password: 'admin1@example.com',
@@ -22,3 +22,14 @@ User.create!(
   password_confirmation:"user1@example.com",
   admin: false
 )
+
+10.times do |num|
+  Task.create!(
+    name: "task#{num}",
+    content: "content#{num}",
+    limit: DateTime.now + 10,
+    status: rand(0..2),
+    priority: rand(0..2),
+    user_id: @user.id
+  )
+end
