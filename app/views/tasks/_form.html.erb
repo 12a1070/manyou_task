@@ -13,29 +13,29 @@
     <% end %>
 
     <div class="field">
-      <%= form.label :name %>
+      <%= form.label :タスク名 %>
       <%= form.text_field :name %>
     </div>
 
     <div class="field">
-      <%= form.label :content %>
+      <%= form.label :コンテント %>
       <%= form.text_field :content %>
     </div>
 
     <div class="field">
-      <%= form.label :limit %>
+      <%= form.label :期限 %>
       <%= form.date_field :limit %>
     </div>
 
     <div class="field">
-      <%= form.label :status%>
+      <%= form.label :状態 %>
       <%= form.select :status, Task.statuses.keys %>
       <%#= form.select :status,[["未着手","未着手"],["着手中","着手中"],["完了","完了"]],include_blank: "今の状態は？"%>
   <%#"未着手"で受け取った値を"未着手"に変換するという意味。それが着手中、完了にも適応されている %>
     </div>
 
     <div class="field">
-      <% form.label :priority%>
+      <% form.label :優先度 %>
       <%= form.select :priority, Task.priorities.keys%>
     </div>
 

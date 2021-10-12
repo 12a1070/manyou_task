@@ -1,9 +1,15 @@
 class TasksController < ApplicationController
   before_action :set_task, only: %i[ show edit update destroy ]
+  # before_action :user_check_t, only: %i[:edit, :update, :destroy]
+  before_action :check_user, only: %i[show edit update destroy]
+
+
 
   # GET /tasks or /tasks.json
   def index
-    @tasks = Task.all
+    # @tasks = Task.all
+# N+1をincludesで解決
+      @tasks = current_user.tasks.all.includes(:user).order(created_at: "DESC")
 
 # 並び替えでソートするボタンを押された場合は降順
     if params[:sort_expired]
@@ -48,7 +54,11 @@ class TasksController < ApplicationController
 
   # POST /tasks or /tasks.json
   def create
-    @task = Task.new(task_params)
+    # @task = Task.new(task_params)
+    # # ログインシステムのテキスト・・・ログインしているユーザーのみの機能
+    # @task.user_id = current_user.id
+
+    @task = current_user.tasks.build(task_params)
 
     respond_to do |format|
       if @task.save
@@ -59,6 +69,7 @@ class TasksController < ApplicationController
         format.json { render json: @task.errors, status: :unprocessable_entity }
       end
     end
+    # render :new if @task.invalid?
   end
 
   # PATCH/PUT /tasks/1 or /tasks/1.json
@@ -93,4 +104,13 @@ class TasksController < ApplicationController
     def task_params
       params.require(:task).permit(:name, :content, :limit, :created_at, :status, :priority)
     end
+
+    def check_user
+        @task = Task.find(params[:id])
+        if current_user.id != @task.user_id
+        # ログインしているユーザーのIDと投稿されているユーザーのIDが違っている場合
+          redirect_to tasks_path, notice: '他人のページへアクセスはできません'
+        end
+    end
+
 end
