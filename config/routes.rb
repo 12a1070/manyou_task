@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :labels
   # アドミン定義
 # namespace・・・URLをアドミンをつけた状態で作れる。
   namespace :admin do

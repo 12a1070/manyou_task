@@ -34,6 +34,9 @@ class TasksController < ApplicationController
       @tasks = @tasks.order(created_at: "DESC")
     end
     @tasks = @tasks.page(params[:page]).per(5)
+
+    @tasks = @tasks.joins(:labels).where(labels: { id: params[:label_id] }) if params[:label_id].present?
+
   end
 
 
@@ -102,7 +105,7 @@ class TasksController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def task_params
-      params.require(:task).permit(:name, :content, :limit, :created_at, :status, :priority)
+      params.require(:task).permit(:name, :content, :limit, :created_at, :status, :priority, { label_ids: []})
     end
 
     def check_user
