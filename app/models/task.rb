@@ -15,4 +15,9 @@ class Task < ApplicationRecord
     scope :search_name, -> (name) {where("name LIKE ?", "%#{name}%")}
     scope :search_status, -> (status) {where(status: status)}
 
+    scope :search_labels, -> (label_id) {
+    task_ids = Labeling.where(label_id: label_id).pluck(:task_id)
+    where(id: task_ids)
+    }
+
 end

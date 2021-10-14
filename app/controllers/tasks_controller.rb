@@ -20,7 +20,7 @@ class TasksController < ApplicationController
     # パラメータにステータスのみがあった場合
     @tasks = @tasks.search_status(params[:search_status]) if params[:search_status].present?
 
-    @tasks = @tasks.joins(:labels).where(labels: { id: params[:label_id] }) if params[:label_id].present?
+    @tasks = @tasks.search_labels(params[:label_id]) if params[:label_id].present?
     @tasks = @tasks.page(params[:page]).per(5)
 
 
