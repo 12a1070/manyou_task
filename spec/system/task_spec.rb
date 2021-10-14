@@ -15,8 +15,8 @@ RSpec.describe 'タスク管理機能', type: :system do
     FactoryBot.create(:second_task, name: "second_name",user_id: @admin_user.id)
     FactoryBot.create(:third_task, name: "dic",user_id: @admin_user.id)
     visit new_session_path
-    fill_in :session_email,with: 'admin@mail.com'
-    fill_in :session_password,with: 'password1'
+    fill_in :session_email,with: @admin_user.email
+    fill_in :session_password,with: @admin_user.password
     click_on'ログイン'
   end
 
@@ -80,6 +80,9 @@ RSpec.describe 'タスク管理機能', type: :system do
   describe '新規作成機能' do
     context 'タスクを新規作成した場合' do
       it '作成したタスクが表示される' do
+        FactoryBot.create(:label)
+        FactoryBot.create(:label2)
+        FactoryBot.create(:label3)
         # タスクを新規作成したとき、作成したタスクが画面に表示される
         visit new_task_path
         # name欄に空欄以外を通したい
@@ -92,10 +95,16 @@ RSpec.describe 'タスク管理機能', type: :system do
         fill_in 'task[limit]' ,with: '002020-10-11'
         select '着手中', from: "task[status]"
         select '中', from: "task[priority]"
+# binding.irb
+        # ラベル貼り付け(step5追加用件)
+        find("#task_label_ids_1").click
+        find("#task_label_ids_2").click
+        # select 'terai1',from: "task_label_ids1"
         # Create Taskを押した時に
         click_button '登録する'
         # コンテントの文字が入っている時だけしたい
         expect(page).to have_content 'test_name'
+        expect(page).to have_content 'label_name2'
       end
     end
   end
@@ -104,7 +113,7 @@ RSpec.describe 'タスク管理機能', type: :system do
   describe '一覧表示機能' do
     before do
       # 必要に応じて、テストデータの内容を変更して構わない
-      FactoryBot.create(:task, name: "test" ,content:"task", user:@admin_user)
+      @task = FactoryBot.create(:task, name: "test" ,content:"task", user:@admin_user)
       FactoryBot.create(:second_task, name: "second_name", user:@admin_user)
       FactoryBot.create(:third_task, name: "name2", user:@admin_user)
     end
@@ -118,6 +127,26 @@ RSpec.describe 'タスク管理機能', type: :system do
     end
 
 
+  # タスク編集機能(step5用件)
+  context 'タスク編集機能' do
+    it 'タスクの編集で付属しているラベルを外すことが可能' do
+      FactoryBot.create(:label)
+      FactoryBot.create(:label2)
+      FactoryBot.create(:label3)
+      visit edit_task_path(@task)
+      check_boxes = all('input[name="task[label_ids][]"]')
+
+      check_boxes[0].click
+      check_boxes[1].click
+
+      click_on "更新する"
+
+      expect(page).to have_content "label_name2"
+      expect(page).to have_content "label_name1"
+    end
+  end
+
+
 # タスク消去機能
   context 'タスク削除機能' do
     it '削除したら一覧画面からタスクが消える' do
@@ -126,7 +155,7 @@ RSpec.describe 'タスク管理機能', type: :system do
       page.accept_confirm do
         first('.task_now').click_link 'Destroy'
       end
-      expect(page).not_to have_content 'name2'
+      expect(page).to have_content 'タスクを消去しました'
     end
   end
 
@@ -148,10 +177,12 @@ RSpec.describe 'タスク管理機能', type: :system do
         click_on '終了期限でソートする'
         task = all('.task_now')
         sleep 1.0
+# binding.irb
+        task = all('.task_now')
 # binding.pryをして expect(task[0]).to have_content '2223-12-31'〜expect(task[2]).to have_content '2221-12-31'が[2][1][0]だったのが間違い。
-        expect(task[0]).to have_content '2223-12-31'
-        expect(task[1]).to have_content '2222-12-31'
-        expect(task[2]).to have_content '2221-12-31'
+        expect(task[0]).to have_content 'second_name'
+        expect(task[1]).to have_content 'name2'
+        expect(task[2]).to have_content 'dic'
       end
     end
   end
