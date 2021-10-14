@@ -9,33 +9,34 @@ class TasksController < ApplicationController
   def index
     # @tasks = Task.all
 # N+1をincludesで解決
-      @tasks = current_user.tasks.all.includes(:user).order(created_at: "DESC")
+    @tasks = current_user.tasks.all.includes(:user).order(created_at: "DESC")
 
 # 並び替えでソートするボタンを押された場合は降順
-    if params[:sort_expired]
-      @tasks = @tasks.order(limit: "ASC")
-    elsif params[:sort_priority]
+    @tasks = @tasks.reorder(limit: "ASC") if params[:sort_expired]
 # 優先順位が低いソート
-      @tasks = @tasks.order(priority: "ASC")
-    end
+    @tasks = @tasks.reorder(priority: "ASC") if params[:sort_priority]
+    # パラメータにタイトルのみがあった場合
+    @tasks = @tasks.search_name(params[:search_name]) if params[:search_name].present?
+    # パラメータにステータスのみがあった場合
+    @tasks = @tasks.search_status(params[:search_status]) if params[:search_status].present?
+
+    @tasks = @tasks.joins(:labels).where(labels: { id: params[:label_id] }) if params[:label_id].present?
+    @tasks = @tasks.page(params[:page]).per(5)
 
 
         # パラメータにタイトルとステータスの両方があった場合
-    if params[:search_name].present? && params[:search_status].present?
-      @tasks =Task.search_name(params[:search_name]).search_status(params[:search_status])
-      #  パラメータにタイトルのみがあった場合
-    elsif params[:search_name].present?
-      @tasks =Task.search_name(params[:search_name])
-      # パラメータにステータスのみがあった場合
-    elsif params[:search_status].present?
-      @tasks = Task.search_status(params[:search_status])
+    # if params[:search_name].present? && params[:search_status].present?
+      # @tasks =Task.search_name(params[:search_name]).search_status(params[:search_status])
+      # #  パラメータにタイトルのみがあった場合
+      # @tasks =Task.search_name(params[:search_name]) if params[:search_name].present?
+      # # パラメータにステータスのみがあった場合
+      # @tasks = Task.search_status(params[:search_status]) if params[:search_status].present?
       # それ以外の時
-    else
-      @tasks = @tasks.order(created_at: "DESC")
-    end
-    @tasks = @tasks.page(params[:page]).per(5)
 
-    @tasks = @tasks.joins(:labels).where(labels: { id: params[:label_id] }) if params[:label_id].present?
+    # @tasks = @tasks.joins(:labels).where(labels: { id: params[:label_id] }) if params[:label_id].present?
+
+    # @tasks = @tasks.page(params[:page]).per(5)
+
 
   end
 
