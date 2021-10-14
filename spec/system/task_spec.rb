@@ -128,11 +128,18 @@ RSpec.describe 'タスク管理機能', type: :system do
 
 
   # タスク編集機能(step5用件)
-  context 'タスク編集機能' do
-    it 'タスクの編集で付属しているラベルを外すことが可能' do
+  context 'ラベル機能' do
+
+    before do
       FactoryBot.create(:label)
       FactoryBot.create(:label2)
       FactoryBot.create(:label3)
+    end
+
+    it 'タスクの編集で付属しているラベルを外すことが可能' do
+      # FactoryBot.create(:label)
+      # FactoryBot.create(:label2)
+      # FactoryBot.create(:label3)
       visit edit_task_path(@task)
       check_boxes = all('input[name="task[label_ids][]"]')
 
@@ -144,6 +151,43 @@ RSpec.describe 'タスク管理機能', type: :system do
       expect(page).to have_content "label_name2"
       expect(page).to have_content "label_name1"
     end
+
+    it 'つけたラベルでの検索が可能' do
+      visit new_task_path
+        # name欄に空欄以外を通したい
+      fill_in 'task[name]',with: 'test_name'
+      # content欄に空欄以外を通す
+      fill_in 'task[content]',with: 'test_content'
+      # 終了期限を登録
+      # step3追加条件
+      # 終了期限の設定において、プルダウン選択の、fill_in'',withだけではなくselect'',fromを使用する。
+      fill_in 'task[limit]' ,with: '002020-10-11'
+      select '着手中', from: "task[status]"
+      select '中', from: "task[priority]"
+
+      # ラベル貼り付け(step5追加用件)
+      check_boxes = all('input[name="task[label_ids][]"]')
+
+      check_boxes[0].click
+      check_boxes[1].click
+
+      # select 'terai1',from: "task_label_ids1"
+      # Create Taskを押した時に
+      click_button '登録する'
+      click_on "Back"
+      # ↑indexに飛んだ
+      select "label_name2", from: "label_id"
+      click_button 'Search'
+
+      task = all('.task_now')
+      expect(task[0]).to have_content "label_name2"
+      expect(task[0]).to have_content "label_name1"
+      expect(task[0]).to have_content "test_name"
+
+
+    end
+
+
   end
 
 
