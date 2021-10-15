@@ -1,5 +1,9 @@
 class Task < ApplicationRecord
 
+    has_many :labelings, dependent: :destroy
+    has_many :labels, through: :labelings
+
+
     belongs_to :user
 
     validates :name, presence: true
@@ -10,5 +14,10 @@ class Task < ApplicationRecord
 
     scope :search_name, -> (name) {where("name LIKE ?", "%#{name}%")}
     scope :search_status, -> (status) {where(status: status)}
+
+    scope :search_labels, -> (label_id) {
+    task_ids = Labeling.where(label_id: label_id).pluck(:task_id)
+    where(id: task_ids)
+    }
 
 end

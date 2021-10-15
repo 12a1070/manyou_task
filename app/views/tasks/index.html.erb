@@ -6,7 +6,11 @@
     <%= form.text_field :search_name %>
     <%= form.label :'status'%>
     <%= form.select :search_status, Task.statuses.keys.to_a, { include_blank:'選択してください'} %>
+    <%= form.label :'label'%>
+    <%= form.select("label_id", Label.pluck(:name, :id), { include_blank: true }) %>
     <%= form.submit 'Search', class: "btn btn-primary" %>
+
+  <%#=form_with url:tasks_path, method: :get, local: true do |form| %>
   <% end %>
 
 <table>
@@ -37,6 +41,9 @@
         <td><%= link_to 'Show', task %></td>
         <td><%= link_to 'Edit', edit_task_path(task) %></td>
         <td><%= link_to 'Destroy', task, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><% task.labels.each do |label| %>
+          <%= label.name %>
+        <% end %>
       </tr>
     <% end %>
   </tbody>
